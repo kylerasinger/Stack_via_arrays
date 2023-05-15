@@ -33,21 +33,20 @@ public class Stack {
 		return false;
 	}
 	
-	private int sizeOf() {
-		return N;
-	}
-	
 	public static void main(String[] args) {
-		//[()]{}{[()()]()}
+		//[()]{}{[()()]()}}}}}}}}
 		
 		char[] openBrackets = {'(', '{', '['};
 		char[] closedBrackets = {')', '}', ']'};
 		
-		Dictionary brackets = new Hashtable();
+		Dictionary<Character, Character> brackets = new Hashtable<Character, Character>();
 		
 		brackets.put(')', '(');
 		brackets.put('}', '{');
 		brackets.put(']', '[');
+		brackets.put('(', ')');
+		brackets.put('{', '}');
+		brackets.put('[', ']');
 		
 		Scanner myObj = new Scanner(System.in);
 		System.out.print("Enter string of parenthese:" );
@@ -55,11 +54,16 @@ public class Stack {
 		String input = myObj.nextLine();
 		System.out.print("Input was '" + input + "'");
 		
+		myObj.close();
+		
 		Stack balanceChecker = new Stack(input.length());
 		
 		Boolean contains = false;
 		Boolean isOpen = false;
 		Boolean isClosed = false;
+		
+		char problemBracket = 0;
+		char neededBracket = 0;
 		
 		for(int i = 0; i < input.length(); i++) {
 			
@@ -93,33 +97,20 @@ public class Stack {
 				//pretty unruly, could make this nicer
 				//checks if the closed bracket and top of the stack correspond to each other.
 				if(balanceChecker.peek() == (char)brackets.get(input.charAt(i))) { 
-					char unused = balanceChecker.pop();
+					balanceChecker.pop();
+				}else {
+					problemBracket = input.charAt(i);
+					neededBracket = balanceChecker.peek();
 				}
 			}
 		}
 		
 		if(balanceChecker.isEmpty()) {
 			System.out.print("\n\nThe brackets are balanced");
-		}else{ System.out.print("\n\nThe brackets are not balanced");}
-		
-		
-		
-//		System.out.print("\n\n ---= post-program, delete all past this ==--- \n\n");
-//		
-//		
-//		System.out.print(brackets);
-//		
-//		Stack stack = new Stack(testCase.length());
-//		
-//		for(int i = 0; i < testCase.length(); i++) {
-//			stack.push(testCase.charAt(i));
-//			System.out.print(stack.peek());
-//		}
-//		System.out.print("\n");
-//		
-//		for(int i = 0; i < testCase.length(); i++) {
-//			System.out.print(stack.pop());
-//		}
+		}else{ 
+			System.out.print("\n\nThe brackets are not balanced. There is a"
+						+ " '" + problemBracket + "' when a '" + brackets.get(neededBracket) + "' or open "
+						+ "bracket is expected. ");
+		}
 	}
-
 }
