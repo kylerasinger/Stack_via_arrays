@@ -24,6 +24,7 @@ public class Stack {
 	}
 	
 	private char peek() {
+		if(isEmpty()) {return '0';}
 		int n = N;
 		return data[--n];
 	}
@@ -58,59 +59,55 @@ public class Stack {
 		
 		Stack balanceChecker = new Stack(input.length());
 		
-		Boolean contains = false;
+		Boolean isBracket = false;
 		Boolean isOpen = false;
 		Boolean isClosed = false;
+		Boolean peekWhenEmpty = false;
 		
-		char problemBracket = 0;
-		char neededBracket = 0;
-		
-		for(int i = 0; i < input.length(); i++) {
-			
-			//check if values are valid
-			contains = false;
+		for(int i = 0; i < input.length(); i++) { //loops over string entered
+			isBracket = false;
 			isOpen = false;
 			isClosed = false;
 			
 			for(int j = 0; j < openBrackets.length; j++) {	
 				if(openBrackets[j] == input.charAt(i)) {
-					contains = true;
+					isBracket = true;
 					isOpen = true;
 					break;
 				}
 				if(closedBrackets[j] == input.charAt(i)) {
-					contains = true;
+					isBracket = true;
 					isClosed = true;
 					break;
 				}
 			}
-			if(!contains) {
-				throw new RuntimeException("Invalid characters within user-inputted string. (Must "
-						+ "only have the following characters: ({[]})");
+			
+			if(!isBracket) {
+				throw new RuntimeException("Invalid characters within user-inputted string. (Must only have the following characters: (, {, [, ], }, )");
 			}
 			
 			//pushes open brackets
-			if(contains && isOpen) {
+			if(isBracket && isOpen) {
 				balanceChecker.push(input.charAt(i));
 			}
-			else if(contains && isClosed) {
+			
+			else if(isBracket && isClosed) {
 				//pretty unruly, could make this nicer
 				//checks if the closed bracket and top of the stack correspond to each other.
+				
 				if(balanceChecker.peek() == (char)brackets.get(input.charAt(i))) { 
 					balanceChecker.pop();
 				}else {
-					problemBracket = input.charAt(i);
-					neededBracket = balanceChecker.peek();
+					if(balanceChecker.peek() == '0') { peekWhenEmpty = true; }
 				}
+				
 			}
 		}
 		
-		if(balanceChecker.isEmpty()) {
+		if(balanceChecker.isEmpty() && !peekWhenEmpty) {
 			System.out.print("\n\nThe brackets are balanced");
 		}else{ 
-			System.out.print("\n\nThe brackets are not balanced. There is a"
-						+ " '" + problemBracket + "' when a '" + brackets.get(neededBracket) + "' or open "
-						+ "bracket is expected. ");
+			System.out.print("\n\nThe brackets are not balanced.");
 		}
 	}
 }
